@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.yjkj.framework.rbac.house.dao.HouseDao">
+	<resultMap type="com.yjkj.framework.rbac.house.model.House" id="houseMap">
+	<association property="userInfo" column="user_id" javaType="com.yjkj.framework.rbac.userInfo.model.UserInfo" select="com.yjkj.framework.rbac.userInfo.dao.UserInfoDao.queryOne"></association>
+	<association property="houseBase" column="base_id" javaType="com.yjkj.framework.rbac.housebase.model.HouseBase" select="com.yjkj.framework.rbac.housebase.dao.HouseBaseDao.informationLoadOne"></association>
+	</resultMap>
+	<select id="informationLoad" parameterType="java.util.HashMap"
+		resultMap="houseMap">
+		SELECT
+		*
+		FROM
+		house 
+		<where>
+			is_delete != '1'
+			<if test="house.user_id != null and house.user_id != ''">
+			 	AND user_id = #{house.user_id}
+			</if>
+			<if test="house.typee != null and house.typee != ''">
+			 	AND typee = #{house.typee}
+			</if>
+			<if test="house.showw != null and house.showw != ''">
+			 	AND showw = #{house.showw}
+			</if>
+			<if test="house.good != null and house.good != ''">
+			 	AND good = #{house.good}
+			</if>
+		</where>
+		ORDER BY
+		id
+		DESC
+		LIMIT
+		#{pager.offSet},#{pager.pageSize}
+	</select>
+	<select id="informationLoadAll"
+		resultMap="houseMap">
+		SELECT
+		*
+		FROM
+		house 
+		<where>
+			is_delete != '1'
+			<if test="typee != null and typee != ''">
+			 	AND typee = #{typee}
+			</if>
+		</where>
+		ORDER BY
+		id
+		DESC
+	</select>
+	<select id="count" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		house
+		<where>
+			is_delete != '1'
+			<if test="user_id != null and user_id != ''">
+			 	AND user_id = #{user_id}
+			</if>
+			<if test="typee != null and typee != ''">
+			 	AND typee = #{typee}
+			</if>
+			<if test="showw != null and showw != ''">
+			 	AND showw = #{showw}
+			</if>
+			<if test="good != null and good != ''">
+			 	AND good = #{good}
+			</if>
+		</where>
+	</select>
+	<select id="countCheckShow" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		house
+		<where>
+			is_delete != '1' AND showw = '1'
+			<if test="user_id != null and user_id != ''">
+			 	AND user_id = #{user_id}
+			</if>
+		</where>
+	</select>
+	<select id="countCheckGood" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		house
+		<where>
+			is_delete != '1' AND good = '1'
+			<if test="user_id != null and user_id != ''">
+			 	AND user_id = #{user_id}
+			</if>
+		</where>
+	</select>
+	<select id="informationLoadOne"  resultMap="houseMap">
+		SELECT
+		*
+		FROM
+		house
+		WHERE
+		id=#{id}
+	</select>
+
+
+	<delete id="informationDelete" >
+		UPDATE
+		house
+		SET
+		is_delete = '1'
+		WHERE
+		id=#{id}
+	</delete>
+
+
+	<insert id="informationAdd" parameterType="com.yjkj.framework.rbac.house.model.House">
+		INSERT INTO
+		house
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="user_id != null">
+				user_id,
+			</if>
+			<if test="base_id != null">
+				base_id,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="size != null">
+				size,
+			</if>
+			<if test="typee != null">
+				typee,
+			</if>
+			<if test="owner != null">
+				owner,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="showw != null">
+				showw,
+			</if>
+			<if test="good != null">
+				good,
+			</if>
+			<if test="createtime != null">
+				createtime,
+			</if>
+			<if test="flag != null">
+				flag,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="user_id != null">
+				#{user_id},
+			</if>
+			<if test="base_id != null">
+				#{base_id},
+			</if>
+			<if test="price != null">
+				#{price},
+			</if>
+			<if test="address != null">
+				#{address},
+			</if>
+			<if test="size != null">
+				#{size},
+			</if>
+			<if test="typee != null">
+				#{typee},
+			</if>
+			<if test="owner != null">
+				#{owner},
+			</if>
+			<if test="url != null">
+				#{url},
+			</if>
+			<if test="remark != null">
+				#{remark},
+			</if>
+			<if test="showw != null">
+				#{showw},
+			</if>
+			<if test="good != null">
+				#{good},
+			</if>
+			<if test="createtime != null">
+				#{createtime},
+			</if>
+			<if test="flag != null">
+				#{flag},
+			</if>
+		</trim>
+	</insert>
+	<update id="informationUpdate" parameterType="com.yjkj.framework.rbac.house.model.House">
+		UPDATE
+		house
+		<set>
+			<if test="name != null">
+				name=#{name},
+			</if>
+			<if test="user_id != null">
+				user_id=#{user_id},
+			</if>
+			<if test="base_id != null">
+				base_id=#{base_id},
+			</if>
+			<if test="price != null">
+				price=#{price},
+			</if>
+			<if test="address != null">
+				address=#{address},
+			</if>
+			<if test="size != null">
+				size=#{size},
+			</if>
+			<if test="typee != null">
+				typee=#{typee},
+			</if>
+			<if test="owner != null">
+				owner=#{owner},
+			</if>
+			<if test="url != null">
+				url=#{url},
+			</if>
+			<if test="remark != null">
+				remark=#{remark},
+			</if>
+			<if test="showw != null">
+				showw=#{showw},
+			</if>
+			<if test="good != null">
+				good=#{good},
+			</if>
+			<if test="createtime != null">
+				createtime=#{createtime},
+			</if>
+			<if test="flag != null">
+				flag=#{flag},
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.yjkj.framework.rbac.look.dao.LookDao">
+	<resultMap type="com.yjkj.framework.rbac.look.model.Look" id="lookMap">
+	<association property="userInfo" column="user_id" javaType="com.yjkj.framework.rbac.userInfo.model.UserInfo" select="com.yjkj.framework.rbac.userInfo.dao.UserInfoDao.queryOne"></association>
+	<association property="house" column="house_id" javaType="com.yjkj.framework.rbac.house.model.House" select="com.yjkj.framework.rbac.house.dao.HouseDao.informationLoadOne"></association>
+	</resultMap>
+	<select id="informationLoad" parameterType="java.util.HashMap"
+		resultMap="lookMap">
+		SELECT
+		*
+		FROM
+		look 
+		<where>
+			is_delete != '1'
+			<if test="look.user_id != null and look.user_id != ''">
+			 	AND user_id = #{look.user_id}
+			</if>
+			<if test="look.manager_id != null and look.manager_id != ''">
+			 	AND house_id IN (SELECT id FROM house WHERE user_id = #{look.manager_id})
+			</if>
+		</where>
+		ORDER BY
+		id
+		DESC
+		LIMIT
+		#{pager.offSet},#{pager.pageSize}
+	</select>
+	<select id="informationLoadAll"
+		resultMap="lookMap">
+		SELECT
+		*
+		FROM
+		look 
+		<where>
+			is_delete != '1'
+		</where>
+		ORDER BY
+		id
+		DESC
+	</select>
+	<select id="count" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		look
+		<where>
+			is_delete != '1'
+			<if test="user_id != null and user_id != ''">
+			 	AND user_id = #{user_id}
+			</if>
+			<if test="manager_id != null and manager_id != ''">
+			 	AND house_id IN (SELECT id FROM house WHERE user_id = #{manager_id})
+			</if>
+		</where>
+	</select>
+	<select id="informationLoadOne"  resultMap="lookMap">
+		SELECT
+		*
+		FROM
+		look
+		WHERE
+		id=#{id}
+	</select>
+
+
+	<delete id="informationDelete" >
+		UPDATE
+		look
+		SET
+		is_delete = '1'
+		id=#{id}
+	</delete>
+
+
+	<insert id="informationAdd" parameterType="com.yjkj.framework.rbac.look.model.Look">
+		INSERT INTO
+		look
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="user_id != null">
+				user_id,
+			</if>
+			<if test="house_id != null">
+				house_id,
+			</if>
+			<if test="look_time != null">
+				look_time,
+			</if>
+			<if test="result != null">
+				result,
+			</if>
+			<if test="createtime != null">
+				createtime,
+			</if>
+			<if test="flag != null">
+				flag,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="user_id != null">
+				#{user_id},
+			</if>
+			<if test="house_id != null">
+				#{house_id},
+			</if>
+			<if test="look_time != null">
+				#{look_time},
+			</if>
+			<if test="result != null">
+				#{result},
+			</if>
+			<if test="createtime != null">
+				#{createtime},
+			</if>
+			<if test="flag != null">
+				#{flag},
+			</if>
+		</trim>
+	</insert>
+	<update id="informationUpdate" parameterType="com.yjkj.framework.rbac.look.model.Look">
+		UPDATE
+		look
+		<set>
+			<if test="name != null">
+				name=#{name},
+			</if>
+			<if test="user_id != null">
+				user_id=#{user_id},
+			</if>
+			<if test="house_id != null">
+				house_id=#{house_id},
+			</if>
+			<if test="look_time != null">
+				look_time=#{look_time},
+			</if>
+			<if test="result != null">
+				result=#{result},
+			</if>
+			<if test="createtime != null">
+				createtime=#{createtime},
+			</if>
+			<if test="flag != null">
+				flag=#{flag},
+			</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+</mapper>
